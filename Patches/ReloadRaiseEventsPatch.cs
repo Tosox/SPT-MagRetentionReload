@@ -22,9 +22,7 @@ namespace Tosox.MagRetentionReload.Patches
         {
             // Forward events to handle the Add-result
             if (MagRetentionState.RetainedMagazine.TryGetValue(__instance, out var retainedMagazine))
-            {
                 retainedMagazine.RaiseEvents(controller, status);
-            }
         }
     }
 }

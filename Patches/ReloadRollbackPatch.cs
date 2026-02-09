@@ -21,9 +21,7 @@ namespace Tosox.MagRetentionReload.Patches
         {
             // Handle the Add-result incase of a rollback
             if (MagRetentionState.RetainedMagazine.TryGetValue(__instance, out var retainedMagazine))
-            {
                 retainedMagazine.RollBack();
-            }
         }
     }
 }

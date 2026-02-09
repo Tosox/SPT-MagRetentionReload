@@ -40,12 +40,12 @@ namespace Tosox.MagRetentionReload.Patches
             ItemAddress __state,
             GStruct156<Player.FirearmController.GClass2006> __result)
         {
-            if (__result.Failed || quickReload)
+            if (__result.Failed || quickReload || __state == null)
                 return;
 
             // Skip if there was no mag in the weapon
             var cmd = __result.Value;
-            if (cmd.RemoveOldMagResult == null || __state == null)
+            if (cmd.RemoveOldMagResult == null)
                 return;
 
             // Avoid double processing just in case
@@ -53,8 +53,7 @@ namespace Tosox.MagRetentionReload.Patches
                 return;
 
             // The old mag EFT just removed from the weapon
-            var oldMag = cmd.RemoveOldMagResult.Item as MagazineItemClass;
-            if (oldMag == null)
+            if (!(cmd.RemoveOldMagResult.Item is MagazineItemClass oldMag))
                 return;
 
             // Insert old mag into the slot that was freed by reloading the weapon

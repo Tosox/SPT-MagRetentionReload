@@ -19,6 +19,10 @@
 
 <img src="readme-res/reload.gif" alt="reload" width="500"/>
 
+## 🙏 Acknowledgements
+
+Thanks to [**Lacyway**](https://github.com/Lacyway) for putting up with all my questions about Fika compatibility
+
 ## 📄 License
 
 Distributed under the MIT License. See `LICENSE` for more information.

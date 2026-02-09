@@ -1,6 +1,4 @@
 ﻿using BepInEx;
-using BepInEx.Bootstrap;
-using EFT;
 using Tosox.MagRetentionReload.Patches;
 
 namespace Tosox.MagRetentionReload
