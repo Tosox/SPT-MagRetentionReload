@@ -5,7 +5,7 @@ namespace Tosox.MagRetentionReload.State
 {
     internal static class MagRetentionState
     {
-        internal static readonly ConditionalWeakTable<Player.FirearmController.GClass2006, GClass3405> RetainedMagazine
+        internal static readonly ConditionalWeakTable<Player.FirearmController.GClass2006, GClass3405> RetainedMagOps
             = new ConditionalWeakTable<Player.FirearmController.GClass2006, GClass3405>();
     }
 }

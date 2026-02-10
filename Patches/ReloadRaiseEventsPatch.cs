@@ -20,9 +20,12 @@ namespace Tosox.MagRetentionReload.Patches
         [PatchPostfix]
         public static void PatchPostfix(Player.FirearmController.GClass2006 __instance, TraderControllerClass controller, CommandStatus status)
         {
-            // Forward events to handle the Add-result
-            if (MagRetentionState.RetainedMagazine.TryGetValue(__instance, out var retainedMagazine))
-                retainedMagazine.RaiseEvents(controller, status);
+            if (!MagRetentionState.RetainedMagOps.TryGetValue(__instance, out var op))
+                return;
+
+            op.RaiseEvents(controller, status);
+            if (status == CommandStatus.Succeed || status == CommandStatus.Failed)
+                MagRetentionState.RetainedMagOps.Remove(__instance);
         }
     }
 }

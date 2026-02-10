@@ -49,7 +49,7 @@ namespace Tosox.MagRetentionReload.Patches
                 return;
 
             // Avoid double processing just in case
-            if (MagRetentionState.RetainedMagazine.TryGetValue(cmd, out _))
+            if (MagRetentionState.RetainedMagOps.TryGetValue(cmd, out _))
                 return;
 
             // The old mag EFT just removed from the weapon
@@ -57,12 +57,12 @@ namespace Tosox.MagRetentionReload.Patches
                 return;
 
             // Insert old mag into the slot that was freed by reloading the weapon
-            var addOldMag = InteractionsHandlerClass.Add(oldMag, __state, itemController, false);
-            if (addOldMag.Failed)
+            var addOldMagOp = InteractionsHandlerClass.Add(oldMag, __state, itemController, true);
+            if (addOldMagOp.Failed)
                 return;
 
-            // Attach the Add-result to this reload command
-            MagRetentionState.RetainedMagazine.Add(cmd, addOldMag.Value);
+            // Attach the Add-operation result to this reload command
+            MagRetentionState.RetainedMagOps.Add(cmd, addOldMagOp.Value);
         }
     }
 }
