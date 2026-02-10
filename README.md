@@ -21,7 +21,7 @@
 
 ## 🙏 Acknowledgements
 
-Thanks to [**Lacyway**](https://github.com/Lacyway) for putting up with all my questions about Fika compatibility
+Thanks to [**Lacyway**](https://github.com/Lacyway) for putting up with all my questions
 
 ## 📄 License
 
