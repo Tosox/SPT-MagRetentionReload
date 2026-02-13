@@ -19,11 +19,11 @@ namespace Tosox.MagRetentionReload.Patches
         [PatchPrefix]
         public static void Prefix(Player.FirearmController.GClass2006 __instance)
         {
-            // Handle the Add-result incase of a rollback
-            if (MagRetentionState.RetainedMagazine.TryGetValue(__instance, out var retainedMagazine))
-            {
-                retainedMagazine.RollBack();
-            }
+            if (!MagRetentionState.RetainedMagOps.TryGetValue(__instance, out var op))
+                return;
+
+            op.RollBack();
+            MagRetentionState.RetainedMagOps.Remove(__instance);
         }
     }
 }
