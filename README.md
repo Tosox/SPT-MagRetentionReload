@@ -4,6 +4,8 @@
 > I originally started working on this mod without knowing that it existed there and by the time I found out, my version was already mostly finished.
 >
 > This mod keeps the behavior simple and does not add any reload time penalties which may be preferable depending on your setup.
+>
+> If you run both mods, it is recommended to turn off **Reload Magazines In-Place** in UI Fixes.
 
 ## 📜 Description
 
