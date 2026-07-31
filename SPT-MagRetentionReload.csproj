@@ -13,8 +13,6 @@
 	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="servercsharp\**" />
-    <None Remove="servercsharp\**" />
     <None Include="References\**" />
   </ItemGroup>
   

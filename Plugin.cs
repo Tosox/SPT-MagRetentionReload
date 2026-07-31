@@ -18,7 +18,6 @@ namespace Tosox.MagRetentionReload
             new ReloadRaiseEventsPatch().Enable();
             new ReloadRollbackPatch().Enable();
             new ReloadUIContextPatch().Enable();
-            new ConvertOperationResultToOperationPatch().Enable();
 
             Logger.LogInfo("Plugin loaded successfully");
         }
