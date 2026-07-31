@@ -14,6 +14,7 @@ namespace Tosox.MagRetentionReload
         public void Awake()
         {
             new ReloadRunPatch().Enable();
+            new ReloadDropModPatch().Enable();
             new ReloadRaiseEventsPatch().Enable();
             new ReloadRollbackPatch().Enable();
             new ReloadUIContextPatch().Enable();
