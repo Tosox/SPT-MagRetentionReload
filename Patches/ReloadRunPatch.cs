@@ -58,17 +58,11 @@ namespace Tosox.MagRetentionReload.Patches
             if (!(cmd.RemoveOldMagResult.Item is MagazineItemClass oldMag))
                 return;
 
-            // Leave AI alone - their gear is host-authoritative and retaining for them would
-            // diverge from what other peers see on their corpses. Anything we cannot positively
-            // identify as AI is treated as a player, so this never silently disables retention.
+            // Leave AI alone
             if (IsAiOwner(itemController))
                 return;
 
-            // Insert old mag into the slot that was freed by reloading the weapon.
-            // This runs on every peer: FIKA mirrors each player's reload by replaying this same
-            // method locally, so all clients reach the same result without any packets of ours.
-            // Sending our own network transaction here would double-apply the move and wedge the
-            // hands controller, since FIKA holds inventory operations until the host confirms.
+            // Insert old mag into the slot that was freed by reloading the weapon
             var addOldMagOp = InteractionsHandlerClass.Add(oldMag, __state, itemController, false);
             if (addOldMagOp.Failed)
                 return;

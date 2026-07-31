@@ -23,11 +23,7 @@ namespace Tosox.MagRetentionReload.Patches
             if (!MagRetentionState.RetainedMagOps.TryGetValue(__instance, out var op))
                 return;
 
-            // Forward the reload command's own status sequence (Begin, then Succeed/Failed) to the
-            // retention operation. The full sequence matters - firing only Succeed leaves the UI
-            // with a half-initialised item, which is what showed the magazine as unsearched.
             op.RaiseEvents(controller, status);
-
             if (status == CommandStatus.Succeed || status == CommandStatus.Failed)
                 MagRetentionState.RetainedMagOps.Remove(__instance);
         }

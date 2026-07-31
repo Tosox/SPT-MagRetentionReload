@@ -23,17 +23,6 @@ namespace Tosox.MagRetentionReload.Patches
             );
         }
 
-        /// <summary>
-        /// Vanilla looks for a free spot for the old magazine across vest -> pockets -> backpack
-        /// (GetPrioritizedGridsForUnloadedObject(backpackIncluded: true)) and swaps it there, or
-        /// drops it when nothing is free. That search runs before the new magazine has moved out of
-        /// its own cells, so the one spot guaranteed to be free - the cells the new magazine is
-        /// vacating - is the one vanilla can never pick. Preferring it keeps the old magazine in the
-        /// rig instead of the backpack, and works even when everything is full.
-        ///
-        /// Anything we cannot improve on falls through to vanilla, which keeps its own notifications
-        /// and its own fallbacks.
-        /// </summary>
         [PatchPrefix]
         public static bool Prefix(ItemUiContext __instance, Weapon weapon, IEnumerable<CompoundItem> collections)
         {
@@ -73,20 +62,13 @@ namespace Tosox.MagRetentionReload.Patches
                 return true;
             }
 
-            // Swap resolves the circular dependency here - the old magazine wants the new one's
-            // cells while the new one wants the weapon slot - and is the same vanilla operation
-            // ReloadWeapon itself uses, so this costs exactly what vanilla costs.
             var swap = InteractionsHandlerClass.Swap(
                 currentMagazine, retainedAddress, foundMagazine, magazineSlot.CreateItemAddress(), traderController, true);
             if (swap.Failed)
             {
-                // The old magazine doesn't fit where the new one was (a drum for a 30-rounder, say),
-                // so let vanilla run its vest -> pockets -> backpack -> drop chain instead
                 return true;
             }
 
-            // Same call vanilla makes for its own swap, so this costs exactly what vanilla costs.
-            // The callback only has to surface a failure the simulation above didn't catch.
             traderController.TryRunNetworkTransaction(swap, new Callback(result =>
             {
                 if (result.Failed)
