@@ -47,8 +47,7 @@ namespace Tosox.MagRetentionReload.Patches
                 return true;
             }
 
-            // Reload the weapon properly when it is in the player's hands so the animation plays
-            // and the reload path's retention applies, rather than silently swapping magazines
+            // Route a held weapon through the reload pipeline so it behaves exactly like pressing the reload key
             var handsController = GamePlayerOwner.MyPlayer?.HandsController as IFirearmHandsController;
             if (handsController != null && handsController.Item == weapon)
             {
