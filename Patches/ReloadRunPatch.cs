@@ -1,7 +1,9 @@
-﻿using EFT;
+using EFT;
 using EFT.InventoryLogic;
 using HarmonyLib;
 using SPT.Reflection.Patching;
+using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Tosox.MagRetentionReload.State;
 
@@ -56,6 +58,11 @@ namespace Tosox.MagRetentionReload.Patches
             if (!(cmd.RemoveOldMagResult.Item is MagazineItemClass oldMag))
                 return;
 
+            // Leave AI alone
+            var owner = (itemController as Player.PlayerInventoryController)?.Player_0;
+            if (owner == null || IsAiPlayer(owner))
+                return;
+
             // Insert old mag into the slot that was freed by reloading the weapon
             var addOldMagOp = InteractionsHandlerClass.Add(oldMag, __state, itemController, false);
             if (addOldMagOp.Failed)
@@ -63,6 +70,23 @@ namespace Tosox.MagRetentionReload.Patches
 
             // Attach the Add-operation result to this reload command
             MagRetentionState.RetainedMagOps.Add(cmd, addOldMagOp.Value);
+        }
+
+        private static readonly Dictionary<Type, FieldInfo> ObservedAiFields = new Dictionary<Type, FieldInfo>();
+
+        private static bool IsAiPlayer(Player player)
+        {
+            if (player.IsAI)
+                return true;
+
+            var type = player.GetType();
+            if (!ObservedAiFields.TryGetValue(type, out var field))
+            {
+                field = type.GetField("IsObservedAI", BindingFlags.Public | BindingFlags.Instance);
+                ObservedAiFields[type] = field;
+            }
+
+            return field != null && (bool)field.GetValue(player);
         }
     }
 }

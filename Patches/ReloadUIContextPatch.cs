@@ -1,39 +1,19 @@
-﻿using EFT.InventoryLogic;
+using Comfort.Common;
+using EFT;
+using EFT.Communications;
+using EFT.InventoryLogic;
 using EFT.UI;
 using HarmonyLib;
 using SPT.Reflection.Patching;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Reflection.Emit;
 
 namespace Tosox.MagRetentionReload.Patches
 {
     public class ReloadUIContextPatch : ModulePatch
     {
-        private static readonly FieldInfo fFoundMagazine = 
-            AccessTools.Field(typeof(ItemUiContext.Class2939), nameof(ItemUiContext.Class2939.foundMagazine));
-
-        private static readonly FieldInfo fMagSlotAddress =
-            AccessTools.Field(typeof(ItemUiContext.Class2939), nameof(ItemUiContext.Class2939.magSlotAddress));
-
-        private static readonly FieldInfo fTraderController = 
+        private static readonly FieldInfo fTraderController =
             AccessTools.Field(typeof(ItemUiContext), "traderControllerClass");
-
-        private static readonly MethodInfo mSwap =
-            AccessTools.Method(typeof(InteractionsHandlerClass),
-                nameof(InteractionsHandlerClass.Swap),
-                new[]
-                {
-                    typeof(Item),
-                    typeof(ItemAddress),
-                    typeof(Item),
-                    typeof(ItemAddress),
-                    typeof(TraderControllerClass),
-                    typeof(bool)
-                });
-
-        private static readonly MethodInfo mChooseToLocation =
-            AccessTools.Method(typeof(ReloadUIContextPatch), nameof(ChooseToLocation));
 
         protected override MethodBase GetTargetMethod()
         {
@@ -43,64 +23,60 @@ namespace Tosox.MagRetentionReload.Patches
             );
         }
 
-        [PatchTranspiler]
-        public static IEnumerable<CodeInstruction> TranspilerPatch(IEnumerable<CodeInstruction> instructions, ILGenerator il)
+        [PatchPrefix]
+        public static bool Prefix(ItemUiContext __instance, Weapon weapon, IEnumerable<CompoundItem> collections)
         {
-            var matcher = new CodeMatcher(instructions, il);
-
-            matcher.MatchForward(false,
-                new CodeMatch(ci => ci.Calls(mSwap)));
-            if (!matcher.IsValid)
+            if (weapon.IsUnderBarrelDeviceActive || __instance.method_16(weapon))
             {
-                Logger.LogWarning("Did not find Swap call");
-                return instructions;
+                return true;
             }
 
-            // From the call position, match backwards to:
-            //     ldloc.3
-            //     ldloc.0
-            //     ldfld foundMagazine
-            matcher.MatchBack(false,
-                new CodeMatch(OpCodes.Ldloc_3),
-                new CodeMatch(OpCodes.Ldloc_0),
-                new CodeMatch(ci => ci.opcode == OpCodes.Ldfld && Equals(ci.operand, fFoundMagazine)));
-            if (!matcher.IsValid)
+            var traderController = (TraderControllerClass)fTraderController.GetValue(__instance);
+
+            // Nothing to retain without a magazine already in the weapon
+            var currentMagazine = weapon.GetCurrentMagazine();
+            if (currentMagazine == null || !traderController.Examined(currentMagazine))
             {
-                Logger.LogWarning("Did not find Swap arg2 pattern (ldloc.3; ldloc.0; ldfld foundMagazine).");
-                return instructions;
+                return true;
             }
 
-            // We are at ldloc.3 now.
-            // Replace ldloc.3 with:
-            //   dup
-            //   ChooseToLocation(currentMagazine, originalResultAddress, foundMagazine, magSlotAddress, traderControllerClass)
-            matcher.SetOpcodeAndAdvance(OpCodes.Dup);
-            matcher.Insert(
-                new CodeInstruction(OpCodes.Ldloc_3),                  // originalResultAddress
-                new CodeInstruction(OpCodes.Ldloc_0),                  // @class
-                new CodeInstruction(OpCodes.Ldfld, fFoundMagazine),    // foundMagazine
-                new CodeInstruction(OpCodes.Ldloc_0),                  // @class
-                new CodeInstruction(OpCodes.Ldfld, fMagSlotAddress),   // magSlotAddress
-                new CodeInstruction(OpCodes.Ldarg_0),                  // this
-                new CodeInstruction(OpCodes.Ldfld, fTraderController), // traderControllerClass
-                new CodeInstruction(OpCodes.Call, mChooseToLocation)); // -> ItemAddress
+            var magazineSlot = weapon.GetMagazineSlot();
+            var foundMagazine = __instance.method_18(magazineSlot, collections);
+            if (foundMagazine == null || foundMagazine.PinLockState == EItemPinLockState.Locked)
+            {
+                return true;
+            }
 
-            return matcher.InstructionEnumeration();
-        }
+            // Route a held weapon through the reload pipeline so it behaves exactly like pressing the reload key
+            var handsController = GamePlayerOwner.MyPlayer?.HandsController as IFirearmHandsController;
+            if (handsController != null && handsController.Item == weapon)
+            {
+                handsController.ReloadMag(foundMagazine, null, null);
+                return false;
+            }
 
-        private static ItemAddress ChooseToLocation(MagazineItemClass currentMagazine, GClass3393 originalResultAddress,
-            MagazineItemClass foundMagazine, ItemAddress magSlotAddress, TraderControllerClass traderController)
-        {
-            var newMagAddress = foundMagazine.CurrentAddress;
-            if (newMagAddress == null)
-                return originalResultAddress;
+            var retainedAddress = foundMagazine.CurrentAddress;
+            if (retainedAddress == null)
+            {
+                return true;
+            }
 
-            var swapResult = InteractionsHandlerClass.Swap(
-                currentMagazine, newMagAddress, foundMagazine, magSlotAddress, traderController, true);
-            if (swapResult.Failed)
-                return originalResultAddress;
+            var swap = InteractionsHandlerClass.Swap(
+                currentMagazine, retainedAddress, foundMagazine, magazineSlot.CreateItemAddress(), traderController, true);
+            if (swap.Failed)
+            {
+                return true;
+            }
 
-            return newMagAddress;
+            traderController.TryRunNetworkTransaction(swap, new Callback(result =>
+            {
+                if (result.Failed)
+                {
+                    NotificationManagerClass.DisplayWarningNotification(result.Error, ENotificationDurationType.Default);
+                }
+            }));
+
+            return false;
         }
     }
 }
