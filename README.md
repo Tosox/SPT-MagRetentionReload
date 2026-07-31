@@ -21,13 +21,20 @@
 * Copy the `BepInEx` folder into your SPT folder
 * Start the game
 
+## 🤝 Fika
+
+When playing with **Fika**, every client in the raid, **including the headless client**, should run this mod, otherwise you will run into syncing issues.
+Each client applies the retention itself while mirroring the other players' reloads. A client without the mod disagrees about where the old magazine ended up, which leaves magazines that look like they are lying on the ground but cannot be picked up.
+
+Hosts can enforce this by adding the plugin GUID to `client.mods.required` in the Fika server config, so mismatched clients are rejected when joining instead of silently desyncing:
+
+```jsonc
+"required": [ "de.tosox.magretentionreload" ]
+```
+
 ## 📷 Preview
 
 <img src="readme-res/reload.gif" alt="reload" width="500"/>
-
-## ⚠️ Known Issues
-
-* When playing with **Fika**, players who don’t have this mod installed won’t see the reload animation for players who do
 
 ## 🙏 Acknowledgements
 
