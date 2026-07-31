@@ -13,6 +13,8 @@
 	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="servercsharp\**" />
+    <None Remove="servercsharp\**" />
     <None Include="References\**" />
   </ItemGroup>
   
@@ -23,6 +25,7 @@
   
   <ItemGroup>
     <Reference Include="Assembly-CSharp" HintPath="References\hollowed.dll" Private="false" />
+    <Reference Include="Comfort" HintPath="References\Comfort.dll" Private="false" />
     <Reference Include="Sirenix.Serialization" HintPath="References\Sirenix.Serialization.dll" Private="false" />
     <Reference Include="spt-reflection" HintPath="References\spt-reflection.dll" Private="false" />
   </ItemGroup>

@@ -1,4 +1,4 @@
-﻿using EFT;
+using EFT;
 using System.Runtime.CompilerServices;
 
 namespace Tosox.MagRetentionReload.State

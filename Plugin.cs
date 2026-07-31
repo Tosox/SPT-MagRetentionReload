@@ -1,4 +1,4 @@
-﻿using BepInEx;
+using BepInEx;
 using Tosox.MagRetentionReload.Patches;
 
 namespace Tosox.MagRetentionReload
@@ -17,6 +17,7 @@ namespace Tosox.MagRetentionReload
             new ReloadRaiseEventsPatch().Enable();
             new ReloadRollbackPatch().Enable();
             new ReloadUIContextPatch().Enable();
+            new ConvertOperationResultToOperationPatch().Enable();
 
             Logger.LogInfo("Plugin loaded successfully");
         }
