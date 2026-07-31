@@ -1,9 +1,9 @@
-using Comfort.Common;
 using EFT;
 using EFT.InventoryLogic;
 using HarmonyLib;
 using SPT.Reflection.Patching;
-using System.Linq;
+using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Tosox.MagRetentionReload.State;
 
@@ -59,7 +59,8 @@ namespace Tosox.MagRetentionReload.Patches
                 return;
 
             // Leave AI alone
-            if (IsAiOwner(itemController))
+            var owner = (itemController as Player.PlayerInventoryController)?.Player_0;
+            if (owner == null || IsAiPlayer(owner))
                 return;
 
             // Insert old mag into the slot that was freed by reloading the weapon
@@ -71,12 +72,21 @@ namespace Tosox.MagRetentionReload.Patches
             MagRetentionState.RetainedMagOps.Add(cmd, addOldMagOp.Value);
         }
 
-        private static bool IsAiOwner(TraderControllerClass itemController)
-        {
-            var owner = Singleton<GameWorld>.Instance?.AllAlivePlayersList
-                .FirstOrDefault(p => p.InventoryController == itemController);
+        private static readonly Dictionary<Type, FieldInfo> ObservedAiFields = new Dictionary<Type, FieldInfo>();
 
-            return owner != null && owner.IsAI;
+        private static bool IsAiPlayer(Player player)
+        {
+            if (player.IsAI)
+                return true;
+
+            var type = player.GetType();
+            if (!ObservedAiFields.TryGetValue(type, out var field))
+            {
+                field = type.GetField("IsObservedAI", BindingFlags.Public | BindingFlags.Instance);
+                ObservedAiFields[type] = field;
+            }
+
+            return field != null && (bool)field.GetValue(player);
         }
     }
 }
