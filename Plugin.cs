@@ -7,7 +7,7 @@ namespace Tosox.MagRetentionReload
     public class Plugin : BaseUnityPlugin
     {
         public const string PluginName = "Mag Retention Reload";
-        public const string PluginVersion = "1.0.0";
+        public const string PluginVersion = "1.1.0";
         public const string PluginAuthor = "Tosox";
         public const string PluginSource = "https://github.com/Tosox/SPT-MagRetentionReload";
 
