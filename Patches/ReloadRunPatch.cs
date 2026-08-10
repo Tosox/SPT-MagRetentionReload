@@ -9,7 +9,7 @@ using Tosox.MagRetentionReload.State;
 
 namespace Tosox.MagRetentionReload.Patches
 {
-    public class ReloadRunPatch : ModulePatch
+    internal class ReloadRunPatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod()
         {

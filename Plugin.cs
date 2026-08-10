@@ -6,12 +6,12 @@ namespace Tosox.MagRetentionReload
     [BepInPlugin("de.tosox.magretentionreload", PluginName, PluginVersion)]
     public class Plugin : BaseUnityPlugin
     {
-        public const string PluginName = "Mag Retention Reload";
-        public const string PluginVersion = "1.1.0";
-        public const string PluginAuthor = "Tosox";
-        public const string PluginSource = "https://github.com/Tosox/SPT-MagRetentionReload";
+        internal const string PluginName = "Mag Retention Reload";
+        internal const string PluginVersion = "1.2.0";
+        internal const string PluginAuthor = "Tosox";
+        internal const string PluginSource = "https://github.com/Tosox/SPT-MagRetentionReload";
 
-        public void Awake()
+        internal void Awake()
         {
             new ReloadRunPatch().Enable();
             new ReloadDropModPatch().Enable();

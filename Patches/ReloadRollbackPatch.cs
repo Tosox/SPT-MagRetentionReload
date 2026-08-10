@@ -6,7 +6,7 @@ using Tosox.MagRetentionReload.State;
 
 namespace Tosox.MagRetentionReload.Patches
 {
-    public class ReloadRollbackPatch : ModulePatch
+    internal class ReloadRollbackPatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod()
         {

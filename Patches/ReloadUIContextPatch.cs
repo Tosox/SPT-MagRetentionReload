@@ -10,7 +10,7 @@ using System.Reflection;
 
 namespace Tosox.MagRetentionReload.Patches
 {
-    public class ReloadUIContextPatch : ModulePatch
+    internal class ReloadUIContextPatch : ModulePatch
     {
         private static readonly FieldInfo fTraderController =
             AccessTools.Field(typeof(ItemUiContext), "traderControllerClass");
