@@ -7,18 +7,18 @@ using Tosox.MagRetentionReload.State;
 
 namespace Tosox.MagRetentionReload.Patches
 {
-    public class ReloadRaiseEventsPatch : ModulePatch
+    internal class ReloadRaiseEventsPatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod()
         {
             return AccessTools.Method(
-                typeof(Player.FirearmController.GClass2006),
-                nameof(Player.FirearmController.GClass2006.RaiseEvents)
+                typeof(Player.FirearmController.ReloadExternalMagResult),
+                nameof(Player.FirearmController.ReloadExternalMagResult.RaiseEvents)
             );
         }
 
         [PatchPostfix]
-        public static void PatchPostfix(Player.FirearmController.GClass2006 __instance, TraderControllerClass controller, CommandStatus status)
+        public static void PatchPostfix(Player.FirearmController.ReloadExternalMagResult __instance, ItemController controller, CommandStatus status)
         {
             if (!MagRetentionState.RetainedMagOps.TryGetValue(__instance, out var op))
                 return;

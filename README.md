@@ -1,5 +1,7 @@
 ﻿# Mag Retention Reload
 
+[![Total Downloads](https://img.shields.io/github/downloads/Tosox/SPT-MagRetentionReload/total.svg?label=Downloads%20(All%20Time))](https://github.com/Tosox/SPT-MagRetentionReload/releases) [![Latest Release Downloads](https://img.shields.io/github/downloads/Tosox/SPT-MagRetentionReload/latest/total.svg?label=Downloads%20(Latest%20Release))](https://github.com/Tosox/SPT-MagRetentionReload/releases/latest)
+
 > A similar mag retention feature is already part of **UI Fixes** by **Tyfon**.  
 > I originally started working on this mod without knowing that it existed there and by the time I found out, my version was already mostly finished.
 >
@@ -33,6 +35,10 @@ Hosts can enforce this by adding the plugin GUID to `client.mods.required` in th
 ```jsonc
 "required": [ "de.tosox.magretentionreload" ]
 ```
+
+## 📝 Changelog
+
+You can check out the latest changes in [`CHANGELOG.md`](CHANGELOG.md).
 
 ## 📷 Preview
 

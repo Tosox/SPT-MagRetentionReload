@@ -7,23 +7,23 @@ using Tosox.MagRetentionReload.State;
 
 namespace Tosox.MagRetentionReload.Patches
 {
-    public class ReloadDropModPatch : ModulePatch
+    internal class ReloadDropModPatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod()
         {
             return AccessTools.Method(
-                typeof(Player.FirearmController.GClass2016),
-                nameof(Player.FirearmController.GClass2016.DropMod)
+                typeof(Player.FirearmController.ReloadExternalMagOperation),
+                nameof(Player.FirearmController.ReloadExternalMagOperation.DropMod)
             );
         }
 
         [PatchPrefix]
-        public static bool Prefix(Player.FirearmController.GClass2016 __instance, Item droppedMod, EWeaponModType modType)
+        public static bool Prefix(Player.FirearmController.ReloadExternalMagOperation __instance, Item droppedMod, EWeaponModType modType)
         {
             if (modType != EWeaponModType.mod_magazine || droppedMod == null)
                 return true;
 
-            var cmd = __instance.Gclass2006_0;
+            var cmd = __instance.ReloadExternalMagResult;
             if (cmd?.RemoveOldMagResult == null || cmd.RemoveOldMagResult.Item != droppedMod)
                 return true;
 

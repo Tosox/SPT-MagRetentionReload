@@ -6,18 +6,18 @@ using Tosox.MagRetentionReload.State;
 
 namespace Tosox.MagRetentionReload.Patches
 {
-    public class ReloadRollbackPatch : ModulePatch
+    internal class ReloadRollbackPatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod()
         {
             return AccessTools.Method(
-                typeof(Player.FirearmController.GClass2006),
-                nameof(Player.FirearmController.GClass2006.RollBack)
+                typeof(Player.FirearmController.ReloadExternalMagResult),
+                nameof(Player.FirearmController.ReloadExternalMagResult.RollBack)
             );
         }
 
         [PatchPrefix]
-        public static void Prefix(Player.FirearmController.GClass2006 __instance)
+        public static void Prefix(Player.FirearmController.ReloadExternalMagResult __instance)
         {
             if (!MagRetentionState.RetainedMagOps.TryGetValue(__instance, out var op))
                 return;

@@ -1,3 +1,4 @@
+using Diz.LanguageExtensions;
 using EFT;
 using EFT.InventoryLogic;
 using HarmonyLib;
@@ -9,43 +10,54 @@ using Tosox.MagRetentionReload.State;
 
 namespace Tosox.MagRetentionReload.Patches
 {
-    public class ReloadRunPatch : ModulePatch
+    internal class ReloadRunPatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod()
         {
             return AccessTools.Method(
-                typeof(Player.FirearmController.GClass2006),
-                nameof(Player.FirearmController.GClass2006.Run)
+                typeof(Player.FirearmController.ReloadExternalMagResult),
+                nameof(Player.FirearmController.ReloadExternalMagResult.Run)
             );
         }
 
         [PatchPrefix]
         public static void Prefix(
+            ItemController itemController,
             Weapon weapon,
-            MagazineItemClass nextMagazine,
+            Magazine nextMagazine,
             bool quickReload,
             ref ItemAddress vestTargetAddress,
             ref ItemAddress __state)
         {
-            // Store original inventory location of the new mag
-            __state = nextMagazine?.Parent;
+            // Skip if there is no mag in the weapon to retain
+            if (quickReload || weapon?.GetCurrentMagazine() == null)
+                return;
 
-            // Force the EFT mag "drop" logic
-            if (!quickReload && weapon?.GetCurrentMagazine() != null)
-                vestTargetAddress = null;
+            // Leave AI alone
+            var owner = (itemController as Player.PlayerInventoryController)?.Player;
+            if (owner == null || IsAiPlayer(owner))
+                return;
+
+            // Original inventory location of the new mag, freed up by the reload
+            var sourceAddress = nextMagazine?.Parent;
+            if (sourceAddress == null)
+                return;
+
+            // Only force the EFT mag "drop" logic once we know where to put the old mag
+            __state = sourceAddress;
+            vestTargetAddress = null;
         }
 
         [PatchPostfix]
         public static void Postfix(
-            TraderControllerClass itemController,
-            bool quickReload,
+            ItemController itemController,
             ItemAddress __state,
-            GStruct156<Player.FirearmController.GClass2006> __result)
+            Option<Player.FirearmController.ReloadExternalMagResult> __result)
         {
-            if (__result.Failed || quickReload || __state == null)
+            // The prefix only sets a state when it forced the drop logic
+            if (__state == null || __result.Failed)
                 return;
 
-            // Skip if there was no mag in the weapon
             var cmd = __result.Value;
             if (cmd.RemoveOldMagResult == null)
                 return;
@@ -55,16 +67,11 @@ namespace Tosox.MagRetentionReload.Patches
                 return;
 
             // The old mag EFT just removed from the weapon
-            if (!(cmd.RemoveOldMagResult.Item is MagazineItemClass oldMag))
-                return;
-
-            // Leave AI alone
-            var owner = (itemController as Player.PlayerInventoryController)?.Player_0;
-            if (owner == null || IsAiPlayer(owner))
+            if (!(cmd.RemoveOldMagResult.Item is Magazine oldMag))
                 return;
 
             // Insert old mag into the slot that was freed by reloading the weapon
-            var addOldMagOp = InteractionsHandlerClass.Add(oldMag, __state, itemController, false);
+            var addOldMagOp = ItemManipulator.Add(oldMag, __state, itemController, false);
             if (addOldMagOp.Failed)
                 return;
 

@@ -10,11 +10,8 @@ using System.Reflection;
 
 namespace Tosox.MagRetentionReload.Patches
 {
-    public class ReloadUIContextPatch : ModulePatch
+    internal class ReloadUIContextPatch : ModulePatch
     {
-        private static readonly FieldInfo fTraderController =
-            AccessTools.Field(typeof(ItemUiContext), "traderControllerClass");
-
         protected override MethodBase GetTargetMethod()
         {
             return AccessTools.Method(
@@ -24,28 +21,24 @@ namespace Tosox.MagRetentionReload.Patches
         }
 
         [PatchPrefix]
-        public static bool Prefix(ItemUiContext __instance, Weapon weapon, IEnumerable<CompoundItem> collections)
+        public static bool Prefix(
+            ItemUiContext __instance,
+            Weapon weapon,
+            IEnumerable<CompoundItem> collections,
+            ItemController ____itemController)
         {
-            if (weapon.IsUnderBarrelDeviceActive || __instance.method_16(weapon))
-            {
+            if (weapon.IsUnderBarrelDeviceActive || __instance.TryExamineMalfunction(weapon))
                 return true;
-            }
-
-            var traderController = (TraderControllerClass)fTraderController.GetValue(__instance);
 
             // Nothing to retain without a magazine already in the weapon
             var currentMagazine = weapon.GetCurrentMagazine();
-            if (currentMagazine == null || !traderController.Examined(currentMagazine))
-            {
+            if (currentMagazine == null || !____itemController.Examined(currentMagazine))
                 return true;
-            }
 
             var magazineSlot = weapon.GetMagazineSlot();
-            var foundMagazine = __instance.method_18(magazineSlot, collections);
+            var foundMagazine = __instance.FindSuitableMagazine(magazineSlot, collections);
             if (foundMagazine == null || foundMagazine.PinLockState == EItemPinLockState.Locked)
-            {
                 return true;
-            }
 
             // Route a held weapon through the reload pipeline so it behaves exactly like pressing the reload key
             var handsController = GamePlayerOwner.MyPlayer?.HandsController as IFirearmHandsController;
@@ -57,23 +50,17 @@ namespace Tosox.MagRetentionReload.Patches
 
             var retainedAddress = foundMagazine.CurrentAddress;
             if (retainedAddress == null)
-            {
                 return true;
-            }
 
-            var swap = InteractionsHandlerClass.Swap(
-                currentMagazine, retainedAddress, foundMagazine, magazineSlot.CreateItemAddress(), traderController, true);
+            var swap = ItemManipulator.Swap(
+                currentMagazine, retainedAddress, foundMagazine, magazineSlot.CreateItemAddress(), ____itemController, true);
             if (swap.Failed)
-            {
                 return true;
-            }
 
-            traderController.TryRunNetworkTransaction(swap, new Callback(result =>
+            ____itemController.TryRunNetworkTransaction(swap, new Callback(result =>
             {
                 if (result.Failed)
-                {
-                    NotificationManagerClass.DisplayWarningNotification(result.Error, ENotificationDurationType.Default);
-                }
+                    NotificationManager.DisplayWarningNotification(result.Error, ENotificationDurationType.Default);
             }));
 
             return false;
