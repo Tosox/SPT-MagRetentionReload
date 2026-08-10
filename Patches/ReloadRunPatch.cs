@@ -1,3 +1,4 @@
+using Diz.LanguageExtensions;
 using EFT;
 using EFT.InventoryLogic;
 using HarmonyLib;
@@ -14,16 +15,16 @@ namespace Tosox.MagRetentionReload.Patches
         protected override MethodBase GetTargetMethod()
         {
             return AccessTools.Method(
-                typeof(Player.FirearmController.GClass2006),
-                nameof(Player.FirearmController.GClass2006.Run)
+                typeof(Player.FirearmController.ReloadExternalMagResult),
+                nameof(Player.FirearmController.ReloadExternalMagResult.Run)
             );
         }
 
         [PatchPrefix]
         public static void Prefix(
-            TraderControllerClass itemController,
+            ItemController itemController,
             Weapon weapon,
-            MagazineItemClass nextMagazine,
+            Magazine nextMagazine,
             bool quickReload,
             ref ItemAddress vestTargetAddress,
             ref ItemAddress __state)
@@ -33,7 +34,7 @@ namespace Tosox.MagRetentionReload.Patches
                 return;
 
             // Leave AI alone
-            var owner = (itemController as Player.PlayerInventoryController)?.Player_0;
+            var owner = (itemController as Player.PlayerInventoryController)?.Player;
             if (owner == null || IsAiPlayer(owner))
                 return;
 
@@ -49,9 +50,9 @@ namespace Tosox.MagRetentionReload.Patches
 
         [PatchPostfix]
         public static void Postfix(
-            TraderControllerClass itemController,
+            ItemController itemController,
             ItemAddress __state,
-            GStruct156<Player.FirearmController.GClass2006> __result)
+            Option<Player.FirearmController.ReloadExternalMagResult> __result)
         {
             // The prefix only sets a state when it forced the drop logic
             if (__state == null || __result.Failed)
@@ -66,11 +67,11 @@ namespace Tosox.MagRetentionReload.Patches
                 return;
 
             // The old mag EFT just removed from the weapon
-            if (!(cmd.RemoveOldMagResult.Item is MagazineItemClass oldMag))
+            if (!(cmd.RemoveOldMagResult.Item is Magazine oldMag))
                 return;
 
             // Insert old mag into the slot that was freed by reloading the weapon
-            var addOldMagOp = InteractionsHandlerClass.Add(oldMag, __state, itemController, false);
+            var addOldMagOp = ItemManipulator.Add(oldMag, __state, itemController, false);
             if (addOldMagOp.Failed)
                 return;
 
