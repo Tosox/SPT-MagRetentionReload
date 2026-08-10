@@ -21,31 +21,42 @@ namespace Tosox.MagRetentionReload.Patches
 
         [PatchPrefix]
         public static void Prefix(
+            TraderControllerClass itemController,
             Weapon weapon,
             MagazineItemClass nextMagazine,
             bool quickReload,
             ref ItemAddress vestTargetAddress,
             ref ItemAddress __state)
         {
-            // Store original inventory location of the new mag
-            __state = nextMagazine?.Parent;
+            // Skip if there is no mag in the weapon to retain
+            if (quickReload || weapon?.GetCurrentMagazine() == null)
+                return;
 
-            // Force the EFT mag "drop" logic
-            if (!quickReload && weapon?.GetCurrentMagazine() != null)
-                vestTargetAddress = null;
+            // Leave AI alone
+            var owner = (itemController as Player.PlayerInventoryController)?.Player_0;
+            if (owner == null || IsAiPlayer(owner))
+                return;
+
+            // Original inventory location of the new mag, freed up by the reload
+            var sourceAddress = nextMagazine?.Parent;
+            if (sourceAddress == null)
+                return;
+
+            // Only force the EFT mag "drop" logic once we know where to put the old mag
+            __state = sourceAddress;
+            vestTargetAddress = null;
         }
 
         [PatchPostfix]
         public static void Postfix(
             TraderControllerClass itemController,
-            bool quickReload,
             ItemAddress __state,
             GStruct156<Player.FirearmController.GClass2006> __result)
         {
-            if (__result.Failed || quickReload || __state == null)
+            // The prefix only sets a state when it forced the drop logic
+            if (__state == null || __result.Failed)
                 return;
 
-            // Skip if there was no mag in the weapon
             var cmd = __result.Value;
             if (cmd.RemoveOldMagResult == null)
                 return;
@@ -56,11 +67,6 @@ namespace Tosox.MagRetentionReload.Patches
 
             // The old mag EFT just removed from the weapon
             if (!(cmd.RemoveOldMagResult.Item is MagazineItemClass oldMag))
-                return;
-
-            // Leave AI alone
-            var owner = (itemController as Player.PlayerInventoryController)?.Player_0;
-            if (owner == null || IsAiPlayer(owner))
                 return;
 
             // Insert old mag into the slot that was freed by reloading the weapon
