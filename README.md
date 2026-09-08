@@ -30,6 +30,7 @@
 
 | Setting | Default | Description |
 | --- | --- | --- |
+| `Enabled` | `true` | Untick to disable magazine retention |
 | `Require Max Weapon Mastering` | `true` | Only retain magazines once the weapon's mastering is maxed out |
 
 ## 🤝 Fika
@@ -51,7 +52,8 @@ You can check out the latest changes in [`CHANGELOG.md`](CHANGELOG.md).
 
 ## 🙏 Acknowledgements
 
-Thanks to [**Lacyway**](https://github.com/Lacyway) for putting up with all my questions
+* Thanks to [**Lacyway**](https://github.com/Lacyway) for putting up with all my questions
+* Thanks to [**Tyfon**](https://github.com/tyfon7) for the Fika sync code that inspired this one
 
 ## 📄 License
 

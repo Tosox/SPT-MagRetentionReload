@@ -1,5 +1,6 @@
 ﻿using EFT;
 using EFT.InventoryLogic;
+using Tosox.MagRetentionReload.Configuration;
 using Tosox.MagRetentionReload.Sync;
 
 namespace Tosox.MagRetentionReload.Helpers
@@ -16,6 +17,8 @@ namespace Tosox.MagRetentionReload.Helpers
             if (owner == null || weapon == null)
                 return false;
 
+            // Mirrored no matter what this client has configured, otherwise it would drop a magazine
+            // that the player it belongs to kept
             if (!owner.IsYourPlayer)
                 return RetentionSync.TakeAnnouncement(owner.ProfileId, nextMagazine?.Id);
 
@@ -36,11 +39,14 @@ namespace Tosox.MagRetentionReload.Helpers
 
         private static bool IsAllowed(SkillManager skills, Weapon weapon)
         {
+            if (!Settings.Enabled.Value)
+                return false;
+
             // Nobody retains while the raid holds clients that would handle it differently
             if (RetentionSync.Incompatible)
                 return false;
 
-            if (!Plugin.RequireMaxMastery.Value)
+            if (!Settings.RequireMaxMastery.Value)
                 return true;
 
             var templateId = (string)weapon.TemplateId;

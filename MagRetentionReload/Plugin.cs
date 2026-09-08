@@ -1,7 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
-using BepInEx.Configuration;
 using BepInEx.Logging;
+using Tosox.MagRetentionReload.Configuration;
 using Tosox.MagRetentionReload.Fika;
 using Tosox.MagRetentionReload.Patches;
 
@@ -15,18 +15,10 @@ namespace Tosox.MagRetentionReload
 
         internal static ManualLogSource Log { get; private set; }
 
-        internal static ConfigEntry<bool> RequireMaxMastery { get; private set; }
-
         internal void Awake()
         {
             Log = Logger;
-
-            RequireMaxMastery = Config.Bind(
-                "General",
-                "Require Max Weapon Mastering",
-                true,
-                "Only retain magazines once the weapon's mastering is maxed out"
-            );
+            Settings.Init(Config);
 
             new ReloadRunPatch().Enable();
             new ReloadDropModPatch().Enable();
