@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Reference Include="Assembly-CSharp" HintPath="..\References\Assembly-CSharp.dll" Private="false" />
+    <Reference Include="bsg.console.core" HintPath="..\References\bsg.console.core.dll" Private="false" />
     <Reference Include="Comfort" HintPath="..\References\Comfort.dll" Private="false" />
     <Reference Include="Fika.Core" HintPath="..\References\Fika.Core.dll" Private="false" />
     <Reference Include="Sirenix.Serialization" HintPath="..\References\Sirenix.Serialization.dll" Private="false" />

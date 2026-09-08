@@ -1,6 +1,8 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
 using BepInEx.Logging;
+using EFT.UI;
+using Tosox.MagRetentionReload.Commands;
 using Tosox.MagRetentionReload.Configuration;
 using Tosox.MagRetentionReload.Fika;
 using Tosox.MagRetentionReload.Patches;
@@ -19,6 +21,8 @@ namespace Tosox.MagRetentionReload
         {
             Log = Logger;
             Settings.Init(Config);
+
+            ConsoleScreen.Processor.RegisterCommandGroup<DebugCommands>();
 
             new ReloadRunPatch().Enable();
             new ReloadDropModPatch().Enable();
