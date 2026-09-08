@@ -3,10 +3,10 @@ using EFT;
 using EFT.InventoryLogic;
 using HarmonyLib;
 using SPT.Reflection.Patching;
-using System;
-using System.Collections.Generic;
 using System.Reflection;
+using Tosox.MagRetentionReload.Helpers;
 using Tosox.MagRetentionReload.State;
+using Tosox.MagRetentionReload.Sync;
 
 namespace Tosox.MagRetentionReload.Patches
 {
@@ -34,8 +34,11 @@ namespace Tosox.MagRetentionReload.Patches
                 return;
 
             // Leave AI alone
-            var owner = (itemController as Player.PlayerInventoryController)?.Player;
-            if (owner == null || IsAiPlayer(owner))
+            var owner = itemController.GetPlayer();
+            if (owner == null || owner.IsAi())
+                return;
+
+            if (!RetentionRules.IsRetaining(owner, weapon, nextMagazine))
                 return;
 
             // Original inventory location of the new mag, freed up by the reload
@@ -51,6 +54,7 @@ namespace Tosox.MagRetentionReload.Patches
         [PatchPostfix]
         public static void Postfix(
             ItemController itemController,
+            Magazine nextMagazine,
             ItemAddress __state,
             Option<Player.FirearmController.ReloadExternalMagResult> __result)
         {
@@ -63,7 +67,7 @@ namespace Tosox.MagRetentionReload.Patches
                 return;
 
             // Avoid double processing just in case
-            if (MagRetentionState.RetainedMagOps.TryGetValue(cmd, out _))
+            if (RetainedMagazines.Operations.TryGetValue(cmd, out _))
                 return;
 
             // The old mag EFT just removed from the weapon
@@ -76,24 +80,12 @@ namespace Tosox.MagRetentionReload.Patches
                 return;
 
             // Attach the Add-operation result to this reload command
-            MagRetentionState.RetainedMagOps.Add(cmd, addOldMagOp.Value);
-        }
+            RetainedMagazines.Operations.Add(cmd, addOldMagOp.Value);
 
-        private static readonly Dictionary<Type, FieldInfo> ObservedAiFields = new Dictionary<Type, FieldInfo>();
-
-        private static bool IsAiPlayer(Player player)
-        {
-            if (player.IsAI)
-                return true;
-
-            var type = player.GetType();
-            if (!ObservedAiFields.TryGetValue(type, out var field))
-            {
-                field = type.GetField("IsObservedAI", BindingFlags.Public | BindingFlags.Instance);
-                ObservedAiFields[type] = field;
-            }
-
-            return field != null && (bool)field.GetValue(player);
+            // Tell the other clients to retain this reload as well
+            var owner = itemController.GetPlayer();
+            if (owner != null && owner.IsYourPlayer)
+                RetentionSync.RetentionAnnouncer?.Invoke(owner.ProfileId, nextMagazine?.Id);
         }
     }
 }

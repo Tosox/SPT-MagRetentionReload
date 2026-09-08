@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36408.4
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPT-MagRetentionReload", "SPT-MagRetentionReload.csproj", "{5E2D137E-80CC-4E29-8286-DB9B660D47CC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagRetentionReload", "MagRetentionReload\MagRetentionReload.csproj", "{EEA84106-A9ED-426F-A963-4B0E1E89CD1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagRetentionReload.Net", "MagRetentionReload.Net\MagRetentionReload.Net.csproj", "{A5E5DF33-FB30-4A69-9CE8-E934B7A438C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5E2D137E-80CC-4E29-8286-DB9B660D47CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5E2D137E-80CC-4E29-8286-DB9B660D47CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5E2D137E-80CC-4E29-8286-DB9B660D47CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5E2D137E-80CC-4E29-8286-DB9B660D47CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEA84106-A9ED-426F-A963-4B0E1E89CD1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEA84106-A9ED-426F-A963-4B0E1E89CD1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEA84106-A9ED-426F-A963-4B0E1E89CD1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEA84106-A9ED-426F-A963-4B0E1E89CD1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5E5DF33-FB30-4A69-9CE8-E934B7A438C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5E5DF33-FB30-4A69-9CE8-E934B7A438C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5E5DF33-FB30-4A69-9CE8-E934B7A438C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5E5DF33-FB30-4A69-9CE8-E934B7A438C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

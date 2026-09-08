@@ -18,6 +18,7 @@
 * Swaps the old magazine into the slot the new magazine was taken from
 * Prevents unnecessary magazine drops during normal reloads if the magazine fits in the rig
 * Works with both the reload hotkey and the inventory context menu
+* Ties the feature to maxed out weapon mastering
 
 ## 📁 Installation
 
@@ -25,11 +26,16 @@
 * Copy the `BepInEx` folder into your SPT folder
 * Start the game
 
+## ⚙️ Configuration
+
+| Setting | Default | Description |
+| --- | --- | --- |
+| `Enabled` | `true` | Untick to disable magazine retention |
+| `Require Max Weapon Mastering` | `true` | Only retain magazines once the weapon's mastering is maxed out |
+
 ## 🤝 Fika
 
 When playing with **Fika**, every client in the raid, **including the headless client**, should run this mod, otherwise you will run into syncing issues.
-Each client applies the retention itself while mirroring the other players' reloads. A client without the mod disagrees about where the old magazine ended up, which leaves magazines that look like they are lying on the ground but cannot be picked up.
-
 Hosts can enforce this by adding the plugin GUID to `client.mods.required` in the Fika server config, so mismatched clients are rejected when joining instead of silently desyncing:
 
 ```jsonc
@@ -46,7 +52,8 @@ You can check out the latest changes in [`CHANGELOG.md`](CHANGELOG.md).
 
 ## 🙏 Acknowledgements
 
-Thanks to [**Lacyway**](https://github.com/Lacyway) for putting up with all my questions
+* Thanks to [**Lacyway**](https://github.com/Lacyway) for putting up with all my questions
+* Thanks to [**Tyfon**](https://github.com/tyfon7) for the Fika sync code that inspired this one
 
 ## 📄 License
 

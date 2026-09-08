@@ -28,7 +28,7 @@ namespace Tosox.MagRetentionReload.Patches
                 return true;
 
             // Stops EFT from also spawning the retained magazine on the ground
-            return !MagRetentionState.RetainedMagOps.TryGetValue(cmd, out _);
+            return !RetainedMagazines.Operations.TryGetValue(cmd, out _);
         }
     }
 }
