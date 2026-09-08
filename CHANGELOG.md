@@ -1,4 +1,8 @@
-# Changelog
+﻿# Changelog
+
+## v1.3.0
+* Magazines are now only retained once the weapon's mastering is maxed out
+* Added a setting to turn the mastering requirement off
 
 ## v1.2.0
 * Compatibility update for SPT 4.1

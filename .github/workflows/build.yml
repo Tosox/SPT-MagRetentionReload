@@ -39,5 +39,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: SPT-MagRetentionReload
-        path: bin/${{ env.BUILD_CONFIGURATION }}/*
+        path: MagRetentionReload/bin/${{ env.BUILD_CONFIGURATION }}/*
         retention-days: 1
