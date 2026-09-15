@@ -8,6 +8,7 @@ namespace Tosox.MagRetentionReload.Configuration
 
         internal static ConfigEntry<bool> Enabled;
         internal static ConfigEntry<bool> RequireMaxMastery;
+        internal static ConfigEntry<bool> NotifyOnDrop;
 
         internal static void Init(ConfigFile config)
         {
@@ -18,6 +19,10 @@ namespace Tosox.MagRetentionReload.Configuration
             RequireMaxMastery = config.Bind(GeneralSection, "Require Max Weapon Mastering", true,
                 new ConfigDescription("Only retain magazines once the weapon's mastering is maxed out",
                     null, Order(1)));
+
+            NotifyOnDrop = config.Bind(GeneralSection, "Notify On Dropped Magazine", true,
+                new ConfigDescription("Display a notification when a magazine is dropped during a reload",
+                    null, Order(2)));
         }
 
         private static ConfigurationManagerAttributes Order(int position)

@@ -1,8 +1,10 @@
 using EFT;
+using EFT.Communications;
 using EFT.InventoryLogic;
 using HarmonyLib;
 using SPT.Reflection.Patching;
 using System.Reflection;
+using Tosox.MagRetentionReload.Configuration;
 using Tosox.MagRetentionReload.State;
 
 namespace Tosox.MagRetentionReload.Patches
@@ -28,7 +30,22 @@ namespace Tosox.MagRetentionReload.Patches
                 return true;
 
             // Stops EFT from also spawning the retained magazine on the ground
-            return !RetainedMagazines.Operations.TryGetValue(cmd, out _);
+            if (RetainedMagazines.Operations.TryGetValue(cmd, out _))
+                return false;
+
+            Notify(cmd, __instance.Player);
+            return true;
+        }
+
+        private static void Notify(Player.FirearmController.ReloadExternalMagResult cmd, Player owner)
+        {
+            if (!Settings.Enabled.Value || !Settings.NotifyOnDrop.Value || cmd.QuickReload)
+                return;
+
+            if (owner == null || !owner.IsYourPlayer)
+                return;
+
+            NotificationManager.DisplayMessageNotification("Magazine dropped during the reload");
         }
     }
 }
