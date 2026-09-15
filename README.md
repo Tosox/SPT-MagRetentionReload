@@ -2,12 +2,8 @@
 
 [![Total Downloads](https://img.shields.io/github/downloads/Tosox/SPT-MagRetentionReload/total.svg?label=Downloads%20(All%20Time))](https://github.com/Tosox/SPT-MagRetentionReload/releases) [![Latest Release Downloads](https://img.shields.io/github/downloads/Tosox/SPT-MagRetentionReload/latest/total.svg?label=Downloads%20(Latest%20Release))](https://github.com/Tosox/SPT-MagRetentionReload/releases/latest)
 
-> A similar mag retention feature is already part of **UI Fixes** by **Tyfon**.  
-> I originally started working on this mod without knowing that it existed there and by the time I found out, my version was already mostly finished.
->
-> This mod keeps the behavior simple and does not add any reload time penalties which may be preferable depending on your setup.
->
-> If you run both mods, it is recommended to turn off **Reload Magazines In-Place** in UI Fixes.
+> **UI Fixes** by **Tyfon** has a mag retention feature as well. This mod keeps it simple and adds no reload time penalty.
+> If you run both, this one takes over. Unticking `Enabled` hands the feature straight back to **UI Fixes**.
 
 ## 📜 Description
 
@@ -18,6 +14,8 @@
 * Swaps the old magazine into the slot the new magazine was taken from
 * Prevents unnecessary magazine drops during normal reloads if the magazine fits in the rig
 * Works with both the reload hotkey and the inventory context menu
+* Notifies you when you lose a magazine during reload
+* Optionally ties the feature to maxed-out weapon mastering
 
 ## 📁 Installation
 
@@ -25,11 +23,17 @@
 * Copy the `BepInEx` folder into your SPT folder
 * Start the game
 
+## ⚙️ Configuration
+
+| Setting | Default | Description |
+| --- | --- | --- |
+| `Enabled` | `true` | Untick to stop retaining your magazines |
+| `Require Max Weapon Mastering` | `false` | Only retain magazines once the weapon's mastering is maxed-out |
+| `Notify on Dropped Magazine` | `true` | Display a notification when a magazine is dropped during a reload |
+
 ## 🤝 Fika
 
-When playing with **Fika**, every client in the raid, **including the headless client**, should run this mod, otherwise you will run into syncing issues.
-Each client applies the retention itself while mirroring the other players' reloads. A client without the mod disagrees about where the old magazine ended up, which leaves magazines that look like they are lying on the ground but cannot be picked up.
-
+When playing with **Fika**, every client in the raid, **including the headless client**, should run the same version of this mod, otherwise you will run into syncing issues.
 Hosts can enforce this by adding the plugin GUID to `client.mods.required` in the Fika server config, so mismatched clients are rejected when joining instead of silently desyncing:
 
 ```jsonc
@@ -46,7 +50,8 @@ You can check out the latest changes in [`CHANGELOG.md`](CHANGELOG.md).
 
 ## 🙏 Acknowledgements
 
-Thanks to [**Lacyway**](https://github.com/Lacyway) for putting up with all my questions
+* Thanks to [**Lacyway**](https://github.com/Lacyway) for putting up with all my questions
+* Thanks to [**Tyfon**](https://github.com/tyfon7) for the Fika sync code that inspired this one
 
 ## 📄 License
 

@@ -19,11 +19,11 @@ namespace Tosox.MagRetentionReload.Patches
         [PatchPrefix]
         public static void Prefix(Player.FirearmController.ReloadExternalMagResult __instance)
         {
-            if (!MagRetentionState.RetainedMagOps.TryGetValue(__instance, out var op))
+            if (!RetainedMagazines.Operations.TryGetValue(__instance, out var op))
                 return;
 
             op.RollBack();
-            MagRetentionState.RetainedMagOps.Remove(__instance);
+            RetainedMagazines.Operations.Remove(__instance);
         }
     }
 }

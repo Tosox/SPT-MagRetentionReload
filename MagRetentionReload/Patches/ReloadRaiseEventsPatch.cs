@@ -20,12 +20,12 @@ namespace Tosox.MagRetentionReload.Patches
         [PatchPostfix]
         public static void PatchPostfix(Player.FirearmController.ReloadExternalMagResult __instance, ItemController controller, CommandStatus status)
         {
-            if (!MagRetentionState.RetainedMagOps.TryGetValue(__instance, out var op))
+            if (!RetainedMagazines.Operations.TryGetValue(__instance, out var op))
                 return;
 
             op.RaiseEvents(controller, status);
             if (status == CommandStatus.Succeed || status == CommandStatus.Failed)
-                MagRetentionState.RetainedMagOps.Remove(__instance);
+                RetainedMagazines.Operations.Remove(__instance);
         }
     }
 }

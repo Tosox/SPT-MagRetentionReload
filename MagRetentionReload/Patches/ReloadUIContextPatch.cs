@@ -1,4 +1,4 @@
-using Comfort.Common;
+﻿using Comfort.Common;
 using EFT;
 using EFT.Communications;
 using EFT.InventoryLogic;
@@ -7,6 +7,7 @@ using HarmonyLib;
 using SPT.Reflection.Patching;
 using System.Collections.Generic;
 using System.Reflection;
+using Tosox.MagRetentionReload.Helpers;
 
 namespace Tosox.MagRetentionReload.Patches
 {
@@ -25,9 +26,16 @@ namespace Tosox.MagRetentionReload.Patches
             ItemUiContext __instance,
             Weapon weapon,
             IEnumerable<CompoundItem> collections,
-            ItemController ____itemController)
+            ItemController ____itemController,
+            Profile ____profile)
         {
             if (weapon.IsUnderBarrelDeviceActive || __instance.TryExamineMalfunction(weapon))
+                return true;
+
+            // Only the local player reloads through the inventory, so nothing here has to be in sync.
+            // The profile is the only source out of raid, where there is no player at all.
+            var profile = ____profile ?? GamePlayerOwner.MyPlayer?.Profile;
+            if (!RetentionRules.IsAllowed(profile, weapon))
                 return true;
 
             // Nothing to retain without a magazine already in the weapon

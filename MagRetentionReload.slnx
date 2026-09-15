@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="MagRetentionReload.Net/MagRetentionReload.Net.csproj" />
+  <Project Path="MagRetentionReload/MagRetentionReload.csproj" />
+</Solution>
