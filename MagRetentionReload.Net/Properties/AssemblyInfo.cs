@@ -6,6 +6,6 @@ using Tosox.MagRetentionReload;
 [assembly: AssemblyCompany(ModInfo.Source)]
 [assembly: AssemblyProduct(ModInfo.Name)]
 [assembly: AssemblyCopyright("Copyright © " + ModInfo.Author + " 2026")]
-[assembly: AssemblyVersion("1.0.0")]
-[assembly: AssemblyFileVersion("1.0.0")]
+[assembly: AssemblyVersion(ModInfo.PacketsVersion)]
+[assembly: AssemblyFileVersion(ModInfo.PacketsVersion)]
 [assembly: ComVisible(false)]
