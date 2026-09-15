@@ -75,7 +75,7 @@ namespace Tosox.MagRetentionReload.Patches
                 return;
 
             // Insert old mag into the slot that was freed by reloading the weapon
-            var addOldMagOp = ItemManipulator.Add(oldMag, __state, itemController, false);
+            var addOldMagOp = RetentionPlacement.Stow(oldMag, nextMagazine, __state, itemController);
             if (addOldMagOp.Failed)
                 return;
 
