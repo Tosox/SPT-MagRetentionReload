@@ -28,8 +28,8 @@
 | Setting | Default | Description |
 | --- | --- | --- |
 | `Enabled` | `true` | Untick to stop retaining your magazines |
-| `Require Max Weapon Mastering` | `false` | Only retain magazines once the weapon's mastering is maxed out |
-| `Notify On Dropped Magazine` | `true` | Display a notification when a magazine is dropped during a reload |
+| `Require Max Weapon Mastering` | `false` | Only retain magazines once the weapon's mastering is maxed-out |
+| `Notify on Dropped Magazine` | `true` | Display a notification when a magazine is dropped during a reload |
 
 ## 🤝 Fika
 
