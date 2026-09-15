@@ -3,7 +3,7 @@
 [![Total Downloads](https://img.shields.io/github/downloads/Tosox/SPT-MagRetentionReload/total.svg?label=Downloads%20(All%20Time))](https://github.com/Tosox/SPT-MagRetentionReload/releases) [![Latest Release Downloads](https://img.shields.io/github/downloads/Tosox/SPT-MagRetentionReload/latest/total.svg?label=Downloads%20(Latest%20Release))](https://github.com/Tosox/SPT-MagRetentionReload/releases/latest)
 
 > **UI Fixes** by **Tyfon** has a mag retention feature as well. This mod keeps it simple and adds no reload time penalty.
-> If you run both, this one takes over. Unticking `Enabled` hands the feature straight back.
+> If you run both, this one takes over. Unticking `Enabled` hands the feature straight back to **UI Fixes**.
 
 ## 📜 Description
 
