@@ -12,7 +12,7 @@ namespace Tosox.MagRetentionReload.Configuration
         internal static void Init(ConfigFile config)
         {
             Enabled = config.Bind(GeneralSection, "Enabled", true,
-                new ConfigDescription("Untick to disable magazine retention",
+                new ConfigDescription("Untick to stop retaining your magazines, handing the feature back to UI Fixes if installed",
                     null, Order(0)));
 
             RequireMaxMastery = config.Bind(GeneralSection, "Require Max Weapon Mastering", true,
