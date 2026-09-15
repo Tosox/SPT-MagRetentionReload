@@ -31,7 +31,7 @@
 
 ## 🤝 Fika
 
-When playing with **Fika**, every client in the raid, **including the headless client**, should run this mod, otherwise you will run into syncing issues.
+When playing with **Fika**, every client in the raid, **including the headless client**, should run the same version of this mod, otherwise you will run into syncing issues.
 Hosts can enforce this by adding the plugin GUID to `client.mods.required` in the Fika server config, so mismatched clients are rejected when joining instead of silently desyncing:
 
 ```jsonc
