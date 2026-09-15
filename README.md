@@ -14,7 +14,8 @@
 * Swaps the old magazine into the slot the new magazine was taken from
 * Prevents unnecessary magazine drops during normal reloads if the magazine fits in the rig
 * Works with both the reload hotkey and the inventory context menu
-* Ties the feature to maxed out weapon mastering
+* Notifies you when you lose a magazine during reload
+* Optionally ties the feature to maxed-out weapon mastering
 
 ## 📁 Installation
 
@@ -27,7 +28,7 @@
 | Setting | Default | Description |
 | --- | --- | --- |
 | `Enabled` | `true` | Untick to stop retaining your magazines |
-| `Require Max Weapon Mastering` | `true` | Only retain magazines once the weapon's mastering is maxed out |
+| `Require Max Weapon Mastering` | `false` | Only retain magazines once the weapon's mastering is maxed out |
 | `Notify On Dropped Magazine` | `true` | Display a notification when a magazine is dropped during a reload |
 
 ## 🤝 Fika

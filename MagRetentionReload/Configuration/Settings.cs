@@ -16,7 +16,7 @@ namespace Tosox.MagRetentionReload.Configuration
                 new ConfigDescription("Untick to stop retaining your magazines, handing the feature back to UI Fixes if installed",
                     null, Order(0)));
 
-            RequireMaxMastery = config.Bind(GeneralSection, "Require Max Weapon Mastering", true,
+            RequireMaxMastery = config.Bind(GeneralSection, "Require Max Weapon Mastering", false,
                 new ConfigDescription("Only retain magazines once the weapon's mastering is maxed out",
                     null, Order(1)));
 
