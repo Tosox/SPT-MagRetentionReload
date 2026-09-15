@@ -1,6 +1,7 @@
 ﻿# Changelog
 
 ## v1.3.0
+* Automatically suppress UI Fixes' in-place magazine reload
 * Fixed magazines dropping when they no longer fit the slot the new magazine came from
 * Magazines are now only retained once the weapon's mastering is maxed out
 * Added a setting to turn the mastering requirement off
