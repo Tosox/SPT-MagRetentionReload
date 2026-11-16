@@ -8,22 +8,30 @@ namespace Tosox.MagRetentionReload.Helpers
     internal static class RetentionPlacement
     {
         /// <summary>
-        /// Puts the old magazine away, in the first of its possible spots that accepts it, and reports
-        /// the failure of the last one when none of them do so that the reload drops it like vanilla
+        /// Puts the old magazine away, in the first of its possible spots that accepts it, and records
+        /// what it did in <paramref name="operations"/>. Returns false when none of them accept it, so
+        /// that the reload drops it like vanilla.
+        ///
+        /// Addons may patch this to place the magazine in other ways. Every client in a Fika raid runs
+        /// it, so whatever they do has to come out the same everywhere, and every inventory change has
+        /// to be added to <paramref name="operations"/> in order, which raises its events along with the
+        /// reload and rolls it back if the reload fails. The name and parameters stay stable for that.
         /// </summary>
-        internal static OperationResult<AddResult> Stow(
-            Magazine oldMagazine, Magazine newMagazine, ItemAddress freedSlot, ItemController itemController)
+        internal static bool Stow(
+            Magazine oldMagazine, Magazine newMagazine, ItemAddress freedSlot, ItemController itemController,
+            List<IOperationResult> operations)
         {
-            var attempt = default(OperationResult<AddResult>);
-
             foreach (var target in Targets(oldMagazine, newMagazine, freedSlot, itemController))
             {
-                attempt = ItemManipulator.Add(oldMagazine, target, itemController, false);
+                var attempt = ItemManipulator.Add(oldMagazine, target, itemController, false);
                 if (attempt.Succeeded)
-                    return attempt;
+                {
+                    operations.Add(attempt.Value);
+                    return true;
+                }
             }
 
-            return attempt;
+            return false;
         }
 
         /// <summary>

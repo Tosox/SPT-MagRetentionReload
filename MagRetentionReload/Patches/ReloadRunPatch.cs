@@ -3,6 +3,7 @@ using EFT;
 using EFT.InventoryLogic;
 using HarmonyLib;
 using SPT.Reflection.Patching;
+using System.Collections.Generic;
 using System.Reflection;
 using Tosox.MagRetentionReload.Helpers;
 using Tosox.MagRetentionReload.State;
@@ -75,12 +76,12 @@ namespace Tosox.MagRetentionReload.Patches
                 return;
 
             // Insert old mag into the slot that was freed by reloading the weapon
-            var addOldMagOp = RetentionPlacement.Stow(oldMag, nextMagazine, __state, itemController);
-            if (addOldMagOp.Failed)
+            var operations = new List<IOperationResult>();
+            if (!RetentionPlacement.Stow(oldMag, nextMagazine, __state, itemController, operations))
                 return;
 
-            // Attach the Add-operation result to this reload command
-            RetainedMagazines.Operations.Add(cmd, addOldMagOp.Value);
+            // Attach the placement to this reload command
+            RetainedMagazines.Operations.Add(cmd, operations);
 
             // Tell the other clients to retain this reload as well
             var owner = itemController.GetPlayer();
