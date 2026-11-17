@@ -22,7 +22,7 @@ namespace Tosox.MagRetentionReload.Patches
             if (!RetainedMagazines.Operations.TryGetValue(__instance, out var operations))
                 return;
 
-            // Undo in reverse, so an item moved aside only goes back once the magazine has left its spot
+            // In reverse, so a moved item only goes back once the magazine has left its spot
             for (var i = operations.Count - 1; i >= 0; i--)
                 operations[i].RollBack();
             RetainedMagazines.Operations.Remove(__instance);

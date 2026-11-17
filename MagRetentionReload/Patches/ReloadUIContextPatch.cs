@@ -32,13 +32,11 @@ namespace Tosox.MagRetentionReload.Patches
             if (weapon.IsUnderBarrelDeviceActive || __instance.TryExamineMalfunction(weapon))
                 return true;
 
-            // Only the local player reloads through the inventory, so nothing here has to be in sync.
-            // The profile is the only source out of raid, where there is no player at all.
+            // Only the local player reloads here, and out of raid there is only the profile
             var profile = ____profile ?? GamePlayerOwner.MyPlayer?.Profile;
             if (!RetentionRules.IsAllowed(profile, weapon))
                 return true;
 
-            // Nothing to retain without a magazine already in the weapon
             var currentMagazine = weapon.GetCurrentMagazine();
             if (currentMagazine == null || !____itemController.Examined(currentMagazine))
                 return true;
@@ -48,7 +46,7 @@ namespace Tosox.MagRetentionReload.Patches
             if (foundMagazine == null || foundMagazine.PinLockState == EItemPinLockState.Locked)
                 return true;
 
-            // Route a held weapon through the reload pipeline so it behaves exactly like pressing the reload key
+            // A held weapon goes through the reload pipeline, like pressing the reload key
             var handsController = GamePlayerOwner.MyPlayer?.HandsController as IFirearmHandsController;
             if (handsController != null && handsController.Item == weapon)
             {

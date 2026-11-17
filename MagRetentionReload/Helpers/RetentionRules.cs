@@ -9,26 +9,19 @@ namespace Tosox.MagRetentionReload.Helpers
     {
         private const int MaxMasteryLevel = 2;
 
-        /// <summary>
-        /// Only the machine the player belongs to decides, every other one is told the outcome
-        /// </summary>
         internal static bool IsRetaining(Player owner, Weapon weapon, Magazine nextMagazine)
         {
             if (owner == null || weapon == null)
                 return false;
 
-            // Mirrored no matter what this client has configured, otherwise it would drop a magazine
-            // that the player it belongs to kept
+            // Mirror the owner regardless of local settings, or this client drops a magazine they kept
             if (!owner.IsYourPlayer)
                 return RetentionSync.TakeAnnouncement(owner.ProfileId, nextMagazine?.Id);
 
             return IsAllowed(owner.Skills, weapon);
         }
 
-        /// <summary>
-        /// Variant for the inventory screen, which has a profile but not always a player, and which
-        /// only ever runs for the local player anyway
-        /// </summary>
+        // For the inventory screen, which may have no player
         internal static bool IsAllowed(Profile profile, Weapon weapon)
         {
             if (profile == null || weapon == null)
@@ -42,7 +35,7 @@ namespace Tosox.MagRetentionReload.Helpers
             if (!Settings.Enabled.Value)
                 return false;
 
-            // Nobody retains while the raid holds clients that would handle it differently
+            // Off while a client on another version is in the raid
             if (RetentionSync.Incompatible)
                 return false;
 
@@ -51,8 +44,7 @@ namespace Tosox.MagRetentionReload.Helpers
 
             var templateId = (string)weapon.TemplateId;
 
-            // Weapons that belong to no mastering group can never reach the required level, so gating
-            // them would turn retention off for them for good
+            // Without a mastering group it can never be maxed, so don't gate it
             if (MasteryGroups.Resolve(templateId) == null)
                 return true;
 

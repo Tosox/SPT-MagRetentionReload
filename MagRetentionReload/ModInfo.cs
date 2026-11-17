@@ -6,7 +6,7 @@ namespace Tosox.MagRetentionReload
         internal const string Name = "Mag Retention Reload";
         internal const string Author = "Tosox";
         internal const string Source = "https://github.com/Tosox/SPT-MagRetentionReload";
-        internal const string Version = "1.3.0";
+        internal const string Version = "1.3.1";
         internal const string PacketsVersion = "1.0.0";
     }
 }
