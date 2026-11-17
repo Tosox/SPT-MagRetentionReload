@@ -2,13 +2,7 @@
 
 namespace Tosox.MagRetentionReload.Net
 {
-    /// <summary>
-    /// Tells the other clients that this player is retaining the magazine of the reload that follows.
-    /// <para/>
-    /// Implementing a Fika interface makes this type unloadable without Fika, which is why it lives in
-    /// its own assembly. Nothing loads it until the sync actually sends something, while the plugin
-    /// assembly is loaded on every start and has to stay walkable for mods that enumerate types.
-    /// </summary>
+    // Own assembly, since implementing a Fika interface makes the type unloadable without Fika
     public struct MagRetentionPacket : INetSerializable
     {
         public const byte KindRetention = 0;

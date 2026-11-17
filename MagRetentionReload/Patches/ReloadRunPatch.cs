@@ -3,6 +3,7 @@ using EFT;
 using EFT.InventoryLogic;
 using HarmonyLib;
 using SPT.Reflection.Patching;
+using System.Collections.Generic;
 using System.Reflection;
 using Tosox.MagRetentionReload.Helpers;
 using Tosox.MagRetentionReload.State;
@@ -29,11 +30,9 @@ namespace Tosox.MagRetentionReload.Patches
             ref ItemAddress vestTargetAddress,
             ref ItemAddress __state)
         {
-            // Skip if there is no mag in the weapon to retain
             if (quickReload || weapon?.GetCurrentMagazine() == null)
                 return;
 
-            // Leave AI alone
             var owner = itemController.GetPlayer();
             if (owner == null || owner.IsAi())
                 return;
@@ -41,12 +40,11 @@ namespace Tosox.MagRetentionReload.Patches
             if (!RetentionRules.IsRetaining(owner, weapon, nextMagazine))
                 return;
 
-            // Original inventory location of the new mag, freed up by the reload
             var sourceAddress = nextMagazine?.Parent;
             if (sourceAddress == null)
                 return;
 
-            // Only force the EFT mag "drop" logic once we know where to put the old mag
+            // No target makes vanilla drop the old magazine, which the postfix stows instead
             __state = sourceAddress;
             vestTargetAddress = null;
         }
@@ -58,7 +56,6 @@ namespace Tosox.MagRetentionReload.Patches
             ItemAddress __state,
             Option<Player.FirearmController.ReloadExternalMagResult> __result)
         {
-            // The prefix only sets a state when it forced the drop logic
             if (__state == null || __result.Failed)
                 return;
 
@@ -66,23 +63,18 @@ namespace Tosox.MagRetentionReload.Patches
             if (cmd.RemoveOldMagResult == null)
                 return;
 
-            // Avoid double processing just in case
             if (RetainedMagazines.Operations.TryGetValue(cmd, out _))
                 return;
 
-            // The old mag EFT just removed from the weapon
             if (!(cmd.RemoveOldMagResult.Item is Magazine oldMag))
                 return;
 
-            // Insert old mag into the slot that was freed by reloading the weapon
-            var addOldMagOp = RetentionPlacement.Stow(oldMag, nextMagazine, __state, itemController);
-            if (addOldMagOp.Failed)
+            var operations = new List<IOperationResult>();
+            if (!RetentionPlacement.Stow(oldMag, nextMagazine, __state, itemController, operations))
                 return;
 
-            // Attach the Add-operation result to this reload command
-            RetainedMagazines.Operations.Add(cmd, addOldMagOp.Value);
+            RetainedMagazines.Operations.Add(cmd, operations);
 
-            // Tell the other clients to retain this reload as well
             var owner = itemController.GetPlayer();
             if (owner != null && owner.IsYourPlayer)
                 RetentionSync.RetentionAnnouncer?.Invoke(owner.ProfileId, nextMagazine?.Id);

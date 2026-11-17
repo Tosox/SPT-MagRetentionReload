@@ -5,18 +5,13 @@ using Tosox.MagRetentionReload.Configuration;
 
 namespace Tosox.MagRetentionReload.Compatibility
 {
-    /// <summary>
-    /// Takes magazine retention over from UI Fixes, which reloads magazines in place out of the box.
-    /// This mod answers for the feature as a whole while it is enabled, the reloads it decides not to
-    /// retain included, so that a weapon below the required mastering is not retained by them instead.
-    /// </summary>
+    // Also blocks reloads this mod declines, or UI Fixes would retain below the required mastering
     internal static class UiFixes
     {
         // Their reload key handler
         private static MethodBase _swapIfNoSpacePrefix;
 
-        // Their inventory context menu reload. The patch methods that are left out only ever act on
-        // the state ReloadInPlacePatch.Prefix sets up, so stopping that one stops them along with it.
+        // Their context menu reload. The other patches only act on state this one sets up
         private static MethodBase _reloadInPlacePrefix;
         private static MethodBase _findSpotPrefix;
         private static MethodBase _findSpotPostfix;
@@ -35,8 +30,7 @@ namespace Tosox.MagRetentionReload.Compatibility
             _findSpotPostfix = Resolve(assembly, "ReloadInPlaceFindSpotPatch", "Postfix");
             _alwaysSwapPostfix = Resolve(assembly, "AlwaysSwapPatch", "Postfix");
 
-            // All of them or none, because suppressing a part of their reload would leave the two mods
-            // sharing a feature that neither of them handles end to end
+            // All or none, otherwise neither mod handles the reload end to end
             if (_swapIfNoSpacePrefix == null || _reloadInPlacePrefix == null || _findSpotPrefix == null
                 || _findSpotPostfix == null || _alwaysSwapPostfix == null)
             {
@@ -57,10 +51,7 @@ namespace Tosox.MagRetentionReload.Compatibility
                 ?.GetMethod(method, BindingFlags.Public | BindingFlags.Static);
         }
 
-        /// <summary>
-        /// Their reload key handler answers whether the game's own reload may run, so stopping it has
-        /// to answer in its place. Staying silent would read as a no and swallow the reload entirely.
-        /// </summary>
+        // Answer in their place, since no answer reads as a no and swallows the reload
         internal class SwapIfNoSpacePrefixPatch : ModulePatch
         {
             protected override MethodBase GetTargetMethod()
@@ -79,10 +70,6 @@ namespace Tosox.MagRetentionReload.Compatibility
             }
         }
 
-        /// <summary>
-        /// Stops their context menu reload from starting, which leaves it to the game and therefore to
-        /// this mod. Turning this mod off lets their patch through again untouched.
-        /// </summary>
         internal class ReloadInPlacePrefixPatch : ModulePatch
         {
             protected override MethodBase GetTargetMethod()
@@ -97,9 +84,7 @@ namespace Tosox.MagRetentionReload.Compatibility
             }
         }
 
-        /// <summary>
-        /// Stops them from freeing up the new magazine's spot while the game looks for one
-        /// </summary>
+        // Stops them freeing the new magazine's spot while the game looks for one
         internal class FindSpotPrefixPatch : ModulePatch
         {
             protected override MethodBase GetTargetMethod()
@@ -114,9 +99,7 @@ namespace Tosox.MagRetentionReload.Compatibility
             }
         }
 
-        /// <summary>
-        /// Stops them from putting that magazine back afterwards
-        /// </summary>
+        // Stops them putting that magazine back afterwards
         internal class FindSpotPostfixPatch : ModulePatch
         {
             protected override MethodBase GetTargetMethod()
@@ -131,9 +114,7 @@ namespace Tosox.MagRetentionReload.Compatibility
             }
         }
 
-        /// <summary>
-        /// Stops them from sorting the new magazine's own spot to the front of the candidates
-        /// </summary>
+        // Stops them sorting the new magazine's spot to the front
         internal class AlwaysSwapPostfixPatch : ModulePatch
         {
             protected override MethodBase GetTargetMethod()

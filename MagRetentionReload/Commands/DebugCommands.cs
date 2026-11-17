@@ -9,7 +9,6 @@ namespace Tosox.MagRetentionReload.Commands
 {
     public class DebugCommands
     {
-        // Mastering runs from 0 to 2, where 2 is the maxed out level
         private const int MaxMasteryLevel = 2;
 
         [ConsoleCommand("masterweapon", "", null, "Sets the mastering of the weapon in hands", new string[] {})]
@@ -38,7 +37,7 @@ namespace Tosox.MagRetentionReload.Commands
             }
             else
             {
-                // Never fired, so the skill has to be created before its level can be set
+                // Never fired, so the skill has to be created first
                 var group = Singleton<GlobalConfiguration>.Instance?.Mastering
                     ?.FirstOrDefault(g => g.Templates != null && g.Templates.Contains(templateId));
 
@@ -54,10 +53,7 @@ namespace Tosox.MagRetentionReload.Commands
             ConsoleScreen.Log($"Mastering of {weapon.LocalizedName()} set to level {level}");
         }
 
-        /// <summary>
-        /// How much progress a level needs, the same way the game derives the level back from it. The
-        /// group thresholds are named after the level they unlock, so Level2 is what the first one costs.
-        /// </summary>
+        // Thresholds are named after the level they unlock, so Level2 is what the first one costs
         private static float ProgressFor(int level, int firstThreshold, int secondThreshold)
         {
             if (level <= 0)

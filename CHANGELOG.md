@@ -1,5 +1,8 @@
 ﻿# Changelog
 
+## v1.3.1
+* Addons can now hook into where the old magazine is placed
+
 ## v1.3.0
 * Automatically suppresses UI Fixes' magazine retention reload feature
 * Added a notification when you lose a magazine during reload

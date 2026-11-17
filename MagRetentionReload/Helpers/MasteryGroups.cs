@@ -8,9 +8,6 @@ namespace Tosox.MagRetentionReload.Helpers
     {
         private static Dictionary<string, string> groupsByTemplate;
 
-        /// <summary>
-        /// Resolves a weapon template to its mastering group
-        /// </summary>
         internal static string Resolve(string templateId)
         {
             if (string.IsNullOrEmpty(templateId))
@@ -25,7 +22,7 @@ namespace Tosox.MagRetentionReload.Helpers
 
         private static Dictionary<string, string> Build()
         {
-            // Missing until the configuration arrives, so keep retrying instead of caching an empty map
+            // Missing until the configuration arrives, so retry instead of caching an empty map
             var masteringGroups = Singleton<GlobalConfiguration>.Instantiated
                 ? Singleton<GlobalConfiguration>.Instance?.Mastering
                 : null;

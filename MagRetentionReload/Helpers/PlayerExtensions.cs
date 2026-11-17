@@ -10,18 +10,12 @@ namespace Tosox.MagRetentionReload.Helpers
     {
         private static readonly Dictionary<Type, FieldInfo> ObservedAiFields = new Dictionary<Type, FieldInfo>();
 
-        /// <summary>
-        /// The player an item controller belongs to, or null when it belongs to nobody
-        /// </summary>
         internal static Player GetPlayer(this ItemController itemController)
         {
             return (itemController as Player.PlayerInventoryController)?.Player;
         }
 
-        /// <summary>
-        /// Whether the player is a bot. Bots mirrored from another client only say so through a field
-        /// that Fika adds, which is looked up by name so that this works without Fika as well.
-        /// </summary>
+        // Observed bots only say so through a field Fika adds, looked up by name to work without Fika
         internal static bool IsAi(this Player player)
         {
             if (player == null)
